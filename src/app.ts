@@ -1,69 +1,106 @@
-// interfaces -describes the structure of an object
-
-interface Named {
-  readonly name: string;
-  age: number;
-  residence?: string; // this makes the residence property optional. This can also be used in methods
+type Admin = {
+  name: string,
+  priviledges: string[];
 }
 
-interface Person extends Named { // inheritance in interfaces
-
-  greet (phrase: string): void;
-
+type Employee = {
+  name: string,
+  startDate: Date;
 }
 
-let user1: Person;
+type ElevatedEmployee = Admin & Employee;
 
-user1 = {
-  name: 'Val', 
-  age: 45,
+const e1: ElevatedEmployee = {
+  name: 'Robina',
+  priviledges: ['create-server'],
+  startDate: new Date()
+}
 
-  greet(phrase: string){
-    console.log(phrase + ' ' + this.name)
+type Combinable = string  | number;
+type Numeric = number | boolean;
+
+// Typeof Type guard
+
+type Universal = Combinable & Numeric;
+
+function adding(a: Combinable, b: Combinable){
+  if (typeof a === 'string' || typeof b ==='string'){
+    return a.toString() + b.toString();
   }
-};
+  return a + b;
 
-user1.greet('Hello - I am ');
-
-//  How to to implement an interface in a class;
-
-interface Greetable{
-  readonly name: string; //  Read only interface properties - ensures that the name is not changed at all.
-
-
-  greet(phrase: string): void;
 }
 
-class People implements Greetable {
-  name: string;
-  age: number;
+type UnknownEmployee = Admin & Employee;
 
-  constructor(n: string, a: number){
-    this.name = n;
-    this.age = a;
+function printEmployeeInformation(emp: UnknownEmployee){
+  console.log(`Name:`+ emp.name);
 
+  if ('priviledges' in emp ){
+    console.log('priviledges' + emp.priviledges);
   }
-  greet(phrase: string){
-    console.log(phrase + ' ' + this.name + this.age)
+
+  if ('startDate' in emp ){
+    console.log('startDate' + emp.startDate);
   }
 }
 
-const first_person = new People('Val', 45)
+printEmployeeInformation(e1);
 
-first_person.greet('Hello - my name is +')
-console.log(first_person)
+// Instance of Type guard
 
-// Interfaces - can also be used to describe the structure of a function
-
-interface AddFn {
-  (a: number, b: number): number;
+class Car{
+  drive(){
+    console.log('Drive');
+  }
 }
 
-let add: AddFn;
+class Truck{
+  drive(){
+    console.log('Drive truck...');
+  }
 
-add = (n1: number, n2: number) =>{
-  return n1 + n2
+  loadCargo(amount: number){
+    console.log(`Loading Cargo...` + amount);
+  }
 }
 
-console.log(add(45, 20))
+type Vehicle = Car | Truck;
+
+const v1 = new Car;
+const v2 = new Truck;
+
+function useVehicle(vehicle: Vehicle){
+  console.log(vehicle.drive())
+  if (vehicle instanceof Truck){
+    console.log(vehicle.loadCargo);
+  }
+
+}
+
+interface Bird{
+  type: 'bird';
+  flyingSpeed: number;
+}
+
+interface Horse{
+  type: 'horse';
+  runningSpeed: number
+}
+
+type Animal = Bird | Horse;
+
+function moveAnimal(animal: Animal){
+  switch (animal.type){
+    case 'bird':
+    console.log(animal.flyingSpeed);
+    break;
+    case 'horse':
+      console.log(animal.runningSpeed)
+  }
+}
+
+const paragraph = document.getElementById('message-output')! as HTMLElement;
+
+// Function overloads
 
